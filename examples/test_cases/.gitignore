@@ -1,0 +1,8 @@
+/*.out.ll
+/*.out.s
+/*.wasm
+/*.cbin
+/*.cbin.hex
+/*.wat
+/*.yul
+/test.db

@@ -1,17 +1,17 @@
 # Compilation Guide
 
-This guide provides detailed steps for compiling DTVM_CppSDK from source, including all necessary dependencies and environment setup.
+This guide provides detailed steps for compiling DTVM_SolSDK from source, including all necessary dependencies and environment setup.
 
 ## System Requirements
 
-DTVM_CppSDK can be built on the following operating systems:
+DTVM_SolSDK can be built on the following operating systems:
 - Linux (Ubuntu/Debian recommended)
 - macOS
 - Windows (via WSL)
 
 ## Dependencies
 
-Before compiling DTVM_CppSDK, you need to install the following dependencies:
+Before compiling DTVM_SolSDK, you need to install the following dependencies:
 
 ### Required Dependencies
 
