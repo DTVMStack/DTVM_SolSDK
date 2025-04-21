@@ -1,0 +1,10 @@
+[profile.default]
+# now 0.8.25 is supported best
+solc-version = "0.8.25"
+optimizer = true
+yul = true
+via_ir = true
+verbosity = 3
+
+[profile.ci.fuzz]
+runs = 10_000
