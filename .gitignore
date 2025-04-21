@@ -1,0 +1,27 @@
+/target
+/*.iml
+/*.idea
+/logs
+/*.out.ll
+/*.out.s
+/*.out.wasm
+/*.out.cbin
+/*.out.cbin.hex
+/*.out.wat
+/*.wasm
+/*.wat
+/SimpleToken.yul
+/my_erc20.wasm
+/test.db
+.DS_Store
+/.vscode
+
+/testsuites
+
+# scan tmp
+/cov-analysis-*
+/tmp_build
+/idir
+/__MACOSX
+
+/lib

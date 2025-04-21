@@ -1,0 +1,4 @@
+/wasm/*.bc
+/wasm/debug
+/wasm/release
+/tests/build
