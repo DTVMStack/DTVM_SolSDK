@@ -1,0 +1,12 @@
+*.wasm
+*.wat
+*.yul
+*.out.ll
+*.out.s
+*.out.hex
+/target
+/idir
+/cov-analysis-*
+/.vscode
+/.idea
+/__MACOSX

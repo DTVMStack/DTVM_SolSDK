@@ -1,0 +1,8 @@
+{
+    "name": "erc20-example-project",
+    "dependencies": {
+      "@openzeppelin/contracts": "^4.9.3",
+      "@openzeppelin/contracts-upgradeable": "^4.9.3"
+    }
+  }
+  

@@ -1,0 +1,11 @@
+/out
+/lib
+/node_modules
+/cache
+/test.db
+.DS_Store
+/*.wasm
+/*.cbin
+/*.cbin.hex
+/*.wat
+/*.tar.gz
