@@ -1,0 +1,101 @@
+name: DTVM_SolSDK test CI
+
+on:
+  push:
+    paths:
+      - '**'
+permissions:
+    contents: read
+
+jobs:
+  build_test_on_x86:
+    name: Build and test DTVM_SolSDK on x86
+    runs-on: ubuntu-latest
+    container:
+      image: dtvmdev1/dtvm-sol-dev-x64:main
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+          submodules: "true"
+      - name: Run Tests
+        run: |
+          export CUR_PATH=$(pwd)
+          cd /opt
+          cp $CUR_PATH/tools/chain_mockcli/linux_x86/chain_mockcli-linux-ubuntu22.04-0.1.0.zip chain_mockcli.zip
+          apt update -y && apt install -y unzip
+          unzip chain_mockcli.zip
+          chmod +x chain_mockcli
+
+          # Install foundry
+          curl -L https://foundry.paradigm.xyz | bash
+          export PATH=$HOME/.foundry/bin:$PATH
+          foundryup
+
+          ./install_llvm16.sh
+          ./install_rust.sh
+
+          . "$HOME/.cargo/env"
+          export PATH=$HOME/.cargo/bin:$PATH
+          
+          rustup install 1.81.0
+          rustup default 1.81.0
+          
+          cd $CUR_PATH
+          export LLVM_SYS_160_PREFIX=/opt/llvm16
+          export LLVM_DIR=$LLVM_SYS_160_PREFIX/lib/cmake/llvm
+          export PATH=$LLVM_SYS_160_PREFIX/bin:$PATH
+          
+          ./download_deps.sh
+          make -f dev.makefile debug
+          cd examples/scripts
+          python3 -m pip install -r requirements.txt
+          ./test_abi_encode.sh
+
+          cd $CUR_PATH
+
+          ./tools/format.sh check
+
+          wget -O /opt/solc https://github.com/ethereum/solidity/releases/download/v0.8.29/solc-static-linux
+          chmod +x /opt/solc
+
+          export PATH=/opt:$PATH
+          cd $CUR_PATH
+
+          cargo test -- --nocapture
+
+          cargo build
+
+          echo "testing examples/erc20"
+          cd $CUR_PATH/examples/erc20
+          ./build_erc20.sh debug
+          ./test_simple_token.sh
+
+          echo "testing examples/foundry_erc20"
+          cd $CUR_PATH/examples/foundry_erc20
+          ./build.sh debug
+          ./test_my_token.sh
+          ./test_token_factory.sh
+
+          echo "testing examples/perf_example"
+          cd $CUR_PATH/examples/perf_example
+          ./build.sh debug
+          ./test_gldtoken.sh
+          ./test_erc721.sh
+          ./test_erc1155.sh
+          ./test_fib.sh
+          ./test_to_string_store.sh
+          ./package.sh
+
+          echo "testing examples/test_cases"
+          cd $CUR_PATH/examples/test_cases
+          ./build_test_init_code_hash.sh debug
+          ./test_init_code_hash.sh
+
+          cd $CUR_PATH
+          cd stdlib
+          make clean
+          make release
+          cd ..
+          cargo build --release

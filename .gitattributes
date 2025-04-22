@@ -1,0 +1,2 @@
+tools/chain_mockcli/linux_x86/chain_mockcli-linux-ubuntu22.04-0.1.0.zip filter=lfs diff=lfs merge=lfs -text
+tools/chain_mockcli/mac_arm/chain_mockcli-mac-arm-0.1.0.zip filter=lfs diff=lfs merge=lfs -text

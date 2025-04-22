@@ -114,7 +114,7 @@ mod tests {
             )
             .unwrap();
         std::fs::write(
-            "target/test_mstore_memory_guard/test_mstore_memory_guard.wasm",
+            "target/test_call_ec_pair_failed/test_call_ec_pair_failed.wasm",
             emited_bc,
         )
         .unwrap();
