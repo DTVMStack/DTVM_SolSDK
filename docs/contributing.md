@@ -6,10 +6,6 @@ Thank you for your interest in the DTVM_SolSDK project! This guide will help you
 
 All participants in the project must adhere to our code of conduct. Please read [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md) for details.
 
-## Contributor License Agreement (CLA)
-
-Before your contributions can be accepted, you must agree to our Contributor License Agreement. Please read [CONTRIBUTOR_LICENSE_AGREEMENT.md](../CONTRIBUTOR_LICENSE_AGREEMENT.md) for details. By submitting a pull request, opening an issue, or making any contribution to the project, you acknowledge that you have read and agree to the terms of the CLA.
-
 ## Ways to Contribute
 
 You can contribute to DTVM_SolSDK in the following ways:
