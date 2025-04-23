@@ -17,6 +17,14 @@ Before using DTVM_SolSDK, ensure you have the following prerequisites installed:
 
 For detailed installation instructions, refer to the [Developer Guide](developer-guide.md).
 
+## Docker image
+
+The fastest way to set up the compilation environment is to use a Docker image or build it based on docker/Dockerfile.
+
+```
+docker pull dtvmdev1/dtvm-sol-dev-x64:main
+```
+
 ## Basic Usage
 
 ### Compiling a Solidity Contract to WebAssembly
