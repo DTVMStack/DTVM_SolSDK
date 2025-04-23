@@ -24,23 +24,19 @@ jobs:
           export CUR_PATH=$(pwd)
           cd /opt
           cp $CUR_PATH/tools/chain_mockcli/linux_x86/chain_mockcli-linux-ubuntu22.04-0.1.0.zip chain_mockcli.zip
-          apt update -y && apt install -y unzip
           unzip chain_mockcli.zip
           chmod +x chain_mockcli
+
+          # install rust
+          /opt/install_rust.sh
 
           # Install foundry
           curl -L https://foundry.paradigm.xyz | bash
           export PATH=$HOME/.foundry/bin:$PATH
           foundryup
 
-          ./install_llvm16.sh
-          ./install_rust.sh
-
           . "$HOME/.cargo/env"
           export PATH=$HOME/.cargo/bin:$PATH
-          
-          rustup install 1.81.0
-          rustup default 1.81.0
           
           cd $CUR_PATH
           export LLVM_SYS_160_PREFIX=/opt/llvm16
