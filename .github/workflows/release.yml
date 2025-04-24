@@ -1,0 +1,41 @@
+name: Release
+on:
+  push:
+    tags:
+      - "v*"
+permissions:
+  contents: write
+jobs:
+  Artifact: # Pack and publish to Github Artifact
+    runs-on: ubuntu-latest
+    container:
+      image: dtvmdev1/dtvm-sol-dev-x64:main
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+          submodules: "true"
+      - name: Build the Release
+        working-directory: . 
+        run: |
+          export CUR_PATH=$(pwd)
+          # install rust
+          /opt/install_rust.sh
+
+          . "$HOME/.cargo/env"
+          export PATH=$HOME/.cargo/bin:$PATH
+
+          export LLVM_SYS_160_PREFIX=/opt/llvm16
+          export LLVM_DIR=$LLVM_SYS_160_PREFIX/lib/cmake/llvm
+          export PATH=$LLVM_SYS_160_PREFIX/bin:$PATH
+
+          ./download_deps.sh
+          .ci/package.sh
+          # there should be a DTVM_SolSDK-*.tar.gz file under the target/release directory
+          ls target/release
+      - name: Upload Artifact to Github Releases
+        uses: actions/upload-artifact@v4
+        with:
+          name: DTVM_SolSDK-linux-amd64
+          path: target/release/DTVM_SolSDK-*.tar.gz
