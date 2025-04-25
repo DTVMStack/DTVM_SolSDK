@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) The Ant Group Core Contributors
+# Copyright (c) the DTVM authors Core Contributors
 # SPDX-License-Identifier: Apache-2.0
 # need python3 -m pip3 install -i https://mirrors.ustc.edu.cn/pypi/simple -r requirements.txt
 

@@ -1,4 +1,4 @@
-// Copyright (c) The Ant Group Core Contributors
+// Copyright (c) the DTVM authors Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 #include "chain.h"
 #include "chain_math.h"

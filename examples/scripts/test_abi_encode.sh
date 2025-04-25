@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) The Ant Group Core Contributors
+# Copyright (c) the DTVM authors Core Contributors
 # SPDX-License-Identifier: Apache-2.0
 
 # This script is used to test the ABI encoding of ERC20 functions using the abi_encode.py script.
