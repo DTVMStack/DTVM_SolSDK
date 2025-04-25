@@ -10,6 +10,7 @@ on:
       - '.gitmodules'
       - '.gitattributes'
       - '.ci'
+      - '.github/workflow/dtvm_sol_test.yml'
 permissions:
     contents: read
 
