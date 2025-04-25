@@ -9,6 +9,7 @@ Note:
     - It should pass all tests in the available continuous integration systems such as GitHub Actions.
     - You should add/modify tests to cover your proposed code changes.
     - If your pull request contains a new feature, please document it on the README.
+    - All commits must follow our [Commit Convention](../docs/COMMIT_CONVENTION.md).
 
 2. Please create an issue first to describe the problem.
 
@@ -79,7 +80,16 @@ test cases https://github.com/XXX/pull/44
 benchmark stats: time XXX ms
 -->
 
-#### 6. Release note
+#### 6. Does this PR require a version bump according to [Semantic Versioning](../docs/VERSIONING.md)?(Y/N):
+
+- [ ] N
+- [ ] Y - Patch version (bug fix)
+- [ ] Y - Minor version (new feature, backwards compatible)
+- [ ] Y - Major version (breaking change, not backwards compatible)
+
+<!-- Explain the reasoning behind the version bump choice -->
+
+#### 7. Release note
 
 <!-- compatibility change, improvement, bugfix, and new feature need a release note -->
 

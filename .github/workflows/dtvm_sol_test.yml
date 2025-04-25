@@ -3,7 +3,13 @@ name: DTVM_SolSDK test CI
 on:
   push:
     paths:
-      - '**'
+      - 'examples/**'
+      - 'stdlib/**'
+      - 'src/**'
+      - 'Cargo.toml'
+      - '.gitmodules'
+      - '.gitattributes'
+      - '.ci'
 permissions:
     contents: read
 
