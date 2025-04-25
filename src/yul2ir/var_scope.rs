@@ -1,4 +1,4 @@
-// Copyright (c) The Ant Group Core Contributors
+// Copyright (c) the DTVM authors Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 // A struct that represents the scope of a variable.
 // It contains a HashMap that maps variable names to their corresponding PointerValue.
