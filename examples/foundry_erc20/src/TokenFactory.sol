@@ -4,39 +4,39 @@ pragma solidity ^0.8.0;
 import "./MyToken.sol";
 
 contract TokenFactory {
-    // 存储已部署的代币地址
+    // Store addresses of deployed tokens
     address[] public deployedTokens;
 
-    // 事件：新代币部署
+    // Event: New token deployment
     event TokenDeployed(
         address indexed tokenAddress, 
         address indexed owner, 
         uint256 initialSupply
     );
 
-    // 部署新代币的函数
+    // Function to deploy a new token
     function createToken(uint256 initialSupply) public returns (address) {
-        // 创建新的MyToken实例
+        // Create new MyToken instance
         MyToken newToken = new MyToken(initialSupply);
         
-        // 将所有权转移给创建者
+        // Transfer ownership to creator
         newToken.transferOwnership(msg.sender);
         
-        // 记录部署的代币地址
+        // Record deployed token address
         deployedTokens.push(address(newToken));
         
-        // 触发事件
+        // Emit event
         emit TokenDeployed(address(newToken), msg.sender, initialSupply);
         
         return address(newToken);
     }
 
-    // 获取所有已部署代币的数量
+    // Get total count of deployed tokens
     function getDeployedTokensCount() public view returns (uint256) {
         return deployedTokens.length;
     }
 
-    // 获取特定索引的代币地址
+    // Get token address at specific index
     function getTokenAt(uint256 index) public view returns (address) {
         require(index < deployedTokens.length, "Invalid token index");
         return deployedTokens[index];
