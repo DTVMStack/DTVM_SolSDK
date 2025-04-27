@@ -10,21 +10,8 @@ docker pull dtvmdev1/dtvm-sol-dev-x64:main
 
 Before using DTVM_SolSDK, ensure the following dependencies are installed on your system:
 
-- **LLVM 16** or **lld-16**
 - **solc** (Solidity compiler) or **Foundry**
 - **Binaryen** (Optional)
-
-### Installing LLVM 16 or lld-16
-
-```bash
-cd /opt
-wget https://github.com/llvm/llvm-project/releases/download/llvmorg-16.0.4/clang+llvm-16.0.4-x86_64-linux-gnu-ubuntu-22.04.tar.xz
-tar -xvf clang+llvm-16.0.4-x86_64-linux-gnu-ubuntu-22.04.tar.xz
-rm -rf clang+llvm-16.0.4-x86_64-linux-gnu-ubuntu-22.04.tar.xz
-mv clang+llvm-16.0.4-x86_64-linux-gnu-ubuntu-22.04 llvm16
-export LLVM_SYS_160_PREFIX=/opt/llvm16
-export PATH=$LLVM_SYS_160_PREFIX/bin:/opt:$PATH
-```
 
 ### Installing Solidity Compiler (solc)
 
@@ -53,6 +40,18 @@ solc --ir --optimize-yul -o output_directory --overwrite your_contract.sol
 
 # Step 2: Compile Yul IR to WebAssembly
 yul2wasm --input output_directory/ContractName.yul --output your_contract.wasm
+```
+
+If you're using Foundry for your project, here's how to compile your Solidity contract to WebAssembly:
+
+```bash
+# Step1: Compile foundry project to Yul IR
+forge build --extra-output-files ir-optimized
+
+# If your solidity filename and contract name is ExampleContract
+
+# Step2: Compile Yul IR to WebAssembly
+yul2wasm  --input out/ExampleContract.sol/ExampleContract.iropt --output out/ExampleContract.wasm
 ```
 
 ### Command Line Options
