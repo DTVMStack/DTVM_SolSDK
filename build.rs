@@ -98,6 +98,12 @@ fn static_link_llvm() {
         println!("cargo:rustc-link-lib=static={lib}");
     }
 
+    // static link lldCommon must be added the last, in order to static link in linux
+    {
+        let lib = &"lldCommon";
+        println!("cargo:rustc-link-lib=static={lib}");
+    }
+
     // Make sure we have an 8MiB stack on Windows. Windows defaults to a 1MB
     // stack, which is not big enough for debug builds
     #[cfg(windows)]
