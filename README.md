@@ -102,6 +102,12 @@ Contributions are welcome! Please see our [Developer Guide](docs/developer-guide
 4. Push to the branch (`git push origin feature-branch`)
 5. Create a new Pull Request
 
+Please adhere to our [Commit Convention](docs/COMMIT_CONVENTION.md) when making commits. All PRs are automatically validated against this standard.
+
+## Versioning
+
+This project follows [Semantic Versioning](https://semver.org/). For details on our version numbering scheme and release process, please see our [Versioning Guide](docs/VERSIONING.md).
+
 ## License
 
 This project is licensed under the Apache-2.0 License.

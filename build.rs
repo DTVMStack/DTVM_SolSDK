@@ -1,4 +1,4 @@
-// Copyright (c) The Ant Group Core Contributors
+// Copyright (c) the DTVM authors Core Contributors
 // Copyright (c) The Smart Intermediate Representation Contributors
 // SPDX-License-Identifier: Apache-2.0
 
@@ -95,6 +95,12 @@ fn static_link_llvm() {
     // Add all the symbols were not using, needed by Windows and debug builds
     for lib in &["lldMachO", "lldMinGW", "lldCOFF"] {
         // "lldReaderWriter", "lldYAML",  in llvm-12
+        println!("cargo:rustc-link-lib=static={lib}");
+    }
+
+    // static link lldCommon must be added the last, in order to static link in linux
+    {
+        let lib = &"lldCommon";
         println!("cargo:rustc-link-lib=static={lib}");
     }
 

@@ -11,10 +11,7 @@ fi
 platform=$(uname)
 if [ "$platform" = "Linux" ]; then
     echo "Building on Linux..."
-    cd stdlib
-    make release
-    cd ..
-    cargo build --release
+    make -f dev.makefile release
 elif [ "$platform" = "Darwin" ]; then
     echo "Building on macOS..."
     make -f dev.makefile release
@@ -34,7 +31,7 @@ git_branch=$(echo "$git_branch" | tr '/' '_')
 
 
 # Create package directory
-package_name="DTVM_SolSDK-${git_commit}-${git_branch}-${platform}"
+package_name="DTVM_SolSDK-${git_commit}-${platform}"
 package_dir="/tmp/${package_name}"
 mkdir -p "$package_dir"
 
@@ -58,7 +55,7 @@ tar -czf "$output_file" -C /tmp "$package_name"
 
 cp -f $output_file target/release/DTVM_SolSDK-${platform}-nightly.tar.gz
 
-echo "Package created: $output_file and target/release/DTVM_SolSDK-${platform}-nightly.tar.gz"
+echo "Package created: $output_file and target/release/DTVM_SolSDK-${platform}-${git_commit}.tar.gz"
 
 # Clean up temporary directory
 rm -rf "$package_dir"

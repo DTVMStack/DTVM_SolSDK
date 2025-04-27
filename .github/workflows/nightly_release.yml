@@ -37,5 +37,5 @@ jobs:
       - name: Upload Artifact to Github Releases
         uses: actions/upload-artifact@v4
         with:
-          name: DTVM_SolSDK-Linux-nightly.tar.gz
-          path: target/release/DTVM_SolSDK-Linux-nightly.tar.gz
+          name: DTVM_SolSDK-Linux-nightly.tar.gz.zip
+          path: target/release/DTVM_SolSDK-*.tar.gz

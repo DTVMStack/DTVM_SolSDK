@@ -1,4 +1,4 @@
-// Copyright (C) 2024-2025 Ant Group Co., Ltd. All Rights Reserved.
+// Copyright (C) 2024-2025 the DTVM authors. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 #[allow(unused)]
@@ -8,6 +8,241 @@ use super::test_helper::TestRuntime;
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_yul_calldatasize() {
+        let mut runtime = TestRuntime::new("CalldatasizeTest", "target/test_yul_calldatasize");
+        let _emited_bc = runtime
+            .compile_test_yul(
+                r#"
+            object "CalldatasizeTest" {
+                code {
+                }
+                object "CalldatasizeTest_deployed" {
+                    code {
+                        function test_calldatasize() -> r {
+                            r := calldatasize()
+                        }
+
+                        let r := test_calldatasize()
+                        mstore(0x00, r)
+                        return(0x00, 0x20)
+                    }
+                }
+            }
+            "#,
+            )
+            .unwrap();
+        runtime.deploy(&[]).unwrap();
+        runtime
+            .call(&solidity_selector("test_calldatasize()"), &[])
+            .unwrap();
+        runtime.assert_result("0000000000000000000000000000000000000000000000000000000000000004");
+    }
+
+    #[test]
+    fn test_yul_origin0() {
+        let mut runtime = TestRuntime::new("Origin0Test", "target/test_yul_origin0");
+        let _emited_bc = runtime
+            .compile_test_yul(
+                r#"
+            object "Origin0Test" {
+                code {
+                }
+                object "Origin0Test_deployed" {
+                    code {
+                        function test_origin() -> r {
+                            r := origin()
+                        }
+
+                        let r := test_origin()
+                        mstore(0x00, r)
+                        return(0x00, 0x20)
+                    }
+                }
+            }
+            "#,
+            )
+            .unwrap();
+        runtime.deploy(&[]).unwrap();
+        runtime
+            .call(&solidity_selector("test_origin()"), &[])
+            .unwrap();
+        // DEFAULT_SENDER_ADDRESS_HEX: 0x0011223344556677889900112233445566778899
+        runtime.assert_result("0000000000000000000000000011223344556677889900112233445566778899");
+    }
+
+    #[test]
+    fn test_yul_origin1() {
+        let mut runtime = TestRuntime::new("Origin1Test", "target/test_yul_origin1");
+        let _emited_bc = runtime
+            .compile_test_yul(
+                r#"
+            object "Origin1Test" {
+                code {
+                }
+                object "Origin1Test_deployed" {
+                    code {
+                        function test_origin() -> r {
+                            r := origin()
+                        }
+
+                        let r := test_origin()
+                        mstore(0x00, r)
+                        return(0x00, 0x20)
+                    }
+                }
+            }
+            "#,
+            )
+            .unwrap();
+        runtime.set_sender(Some(
+            "0x1234567890123456789012345678901234567890".to_string(),
+        ));
+        runtime.deploy(&[]).unwrap();
+        runtime
+            .call(&solidity_selector("test_origin()"), &[])
+            .unwrap();
+        runtime.assert_result("0000000000000000000000001234567890123456789012345678901234567890");
+    }
+
+    #[test]
+    fn test_yul_origin2() {
+        let mut runtime = TestRuntime::new("Origin2Test", "target/test_yul_origin2");
+        let _emited_bc = runtime
+            .compile_test_yul(
+                r#"
+            object "OriginTest" {
+                code {
+                    let _datasize := datasize("OriginTest_deployed")
+                    datacopy(0x00, dataoffset("OriginTest_deployed"), _datasize)
+                    return(0x00, _datasize)
+                }
+
+                object "OriginTest_deployed" {
+                    code {
+                        datacopy(0x00, dataoffset("ContractA"), datasize("ContractA"))
+                        let addrContractA := create(0, 0x00, datasize("ContractA"))
+                        mstore(0x00, 0xb7cdb9f0)
+                        let success := call(gas(), addrContractA, 0, 0x00, 0x04, 0x00, 0x20)
+                        if iszero(success) { revert(0x00, 0x00) } // Revert if failed
+
+                        return(0x00, 0x20)
+                    }
+
+                    object "ContractA" {
+                        code {
+                            let _aDatasize := datasize("ContractA_deployed")
+                            datacopy(0x00, dataoffset("ContractA_deployed"), _aDatasize)
+                            return(0x00, _aDatasize)
+                        }
+
+                        object "ContractA_deployed" {
+                            code {
+                                let _bDatasize := datasize("ContractB")
+                                datacopy(0x00, dataoffset("ContractB"), _bDatasize)
+                                let addrContractB := create(0, 0x00, _bDatasize)
+                                mstore(0x00, 0xb7cdb9f0)
+                                let success := call(gas(), addrContractB, 0, 0x00, 0x04, 0x00, 0x20)
+                                if iszero(success) { revert(0x00, 0x00) }
+
+                                return(0x00, 0x20)
+                            }
+
+                            object "ContractB" {
+                                code {
+                                }
+
+                                object "ContractB_deployed" {
+                                    code {
+                                        function test_origin() -> result {
+                                            result := origin()
+                                        }
+                                        mstore(0x00, test_origin())
+                                        return(0x00, 0x20)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            "#,
+            )
+            .unwrap();
+        runtime.set_sender(Some(
+            "0x1234567890123456789012345678901234567890".to_string(),
+        ));
+        runtime.deploy(&[]).unwrap();
+        runtime
+            .call(&solidity_selector("test_origin()"), &[])
+            .unwrap();
+        runtime.assert_result("0000000000000000000000001234567890123456789012345678901234567890");
+    }
+
+    #[test]
+    fn test_yul_address() {
+        let mut runtime = TestRuntime::new("AddressTest", "target/test_yul_address");
+        let _emited_bc = runtime
+            .compile_test_yul(
+                r#"
+            object "AddressTest" {
+                code {
+                }
+                object "AddressTest_deployed" {
+                    code {
+                        function test_address() -> r {
+                            r := address()
+                        }
+
+                        let r := test_address()
+                        mstore(0x00, r)
+                        return(0x00, 0x20)
+                    }
+                }
+            }
+            "#,
+            )
+            .unwrap();
+        runtime.deploy(&[]).unwrap();
+        runtime
+            .call(&solidity_selector("test_address()"), &[])
+            .unwrap();
+        // DEFAULT_RECEIVER_ADDRESS_HEX: 0xaabbccddeeffaabbccddeeffaabbccddeeffaabb
+        runtime.assert_result("000000000000000000000000aabbccddeeffaabbccddeeffaabbccddeeffaabb");
+    }
+
+    #[test]
+    fn test_yul_gaslimit() {
+        let mut runtime = TestRuntime::new("GaslimitTest", "target/test_yul_gaslimit");
+        let _emited_bc = runtime
+            .compile_test_yul(
+                r#"
+            object "GaslimitTest" {
+                code {
+                }
+                object "GaslimitTest_deployed" {
+                    code {
+                        function test_gaslimit() -> r {
+                            r := gaslimit()
+                        }
+
+                        let r := test_gaslimit()
+                        mstore(0x00, r)
+                        return(0x00, 0x20)
+                    }
+                }
+            }
+            "#,
+            )
+            .unwrap();
+        runtime.deploy(&[]).unwrap();
+        runtime
+            .call(&solidity_selector("test_gaslimit()"), &[])
+            .unwrap();
+        // DEFAULT_GAS_LIMIT: 10000000
+        runtime.assert_result("0000000000000000000000000000000000000000000000000000000000989680");
+    }
 
     #[test]
     fn test_callvalue_not_zero() {
