@@ -9,7 +9,7 @@ on:
       - 'Cargo.toml'
       - '.gitmodules'
       - '.gitattributes'
-      - '.ci'
+      - '.ci/**'
       - '.github/workflow/dtvm_sol_test.yml'
 permissions:
     contents: read

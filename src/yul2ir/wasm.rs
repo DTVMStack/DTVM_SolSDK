@@ -163,6 +163,11 @@ pub fn link(
 
     let clang_rt_lib_dir = std::env::var("CHAIN_IR_CLANG_RT_LIB_DIR")
         .unwrap_or_else(|_| utils::get_clang_rt_lib_dir());
+    let clang_rt_lib_dir = if clang_rt_lib_dir.is_empty() {
+        utils::get_clang_rt_lib_dir()
+    } else {
+        clang_rt_lib_dir
+    };
 
     let mut command_line = vec![
         CString::new(format!(
