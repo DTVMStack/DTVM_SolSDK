@@ -2,15 +2,10 @@ name: DTVM_SolSDK test CI
 
 on:
   push:
-    paths:
-      - 'examples/**'
-      - 'stdlib/**'
-      - 'src/**'
-      - 'Cargo.toml'
-      - '.gitmodules'
-      - '.gitattributes'
-      - '.ci/**'
-      - '.github/workflow/dtvm_sol_test.yml'
+    paths-ignore:
+      - 'docs/**'
+      - "*.md"
+      - ".gitignore"
 permissions:
     contents: read
 
@@ -44,12 +39,12 @@ jobs:
 
           . "$HOME/.cargo/env"
           export PATH=$HOME/.cargo/bin:$PATH
-          
+
           cd $CUR_PATH
           export LLVM_SYS_160_PREFIX=/opt/llvm16
           export LLVM_DIR=$LLVM_SYS_160_PREFIX/lib/cmake/llvm
           export PATH=$LLVM_SYS_160_PREFIX/bin:$PATH
-          
+
           ./download_deps.sh
           make -f dev.makefile debug
           cd examples/scripts

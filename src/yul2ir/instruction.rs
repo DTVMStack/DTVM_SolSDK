@@ -22,14 +22,12 @@ fn check_args_count(
     expected: usize,
 ) -> Result<(), ASTLoweringError> {
     if args.len() != expected {
-        return Err(ASTLoweringError {
-            message: format!(
-                "Instruction {:?} Expected {} arguments, but got {}",
-                instr,
-                expected,
-                args.len()
-            ),
-        });
+        return Err(ASTLoweringError::BuilderError(format!(
+            "Instruction {:?} Expected {} arguments, but got {}",
+            instr,
+            expected,
+            args.len()
+        )));
     }
     Ok(())
 }

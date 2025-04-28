@@ -20,3 +20,4 @@ mod test_helper;
 mod transfer_tests;
 mod tstore_tload_tests;
 mod tuple_tests;
+mod var_redefine_tests;
