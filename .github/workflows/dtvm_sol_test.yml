@@ -6,6 +6,11 @@ on:
       - 'docs/**'
       - "*.md"
       - ".gitignore"
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - "*.md"
+      - ".gitignore"
 permissions:
     contents: read
 
