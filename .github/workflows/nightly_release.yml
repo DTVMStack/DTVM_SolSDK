@@ -1,23 +1,26 @@
-name: nightly-release
+name: DTVM_SolSDK Nightly Release
+
 on:
   workflow_dispatch:
     paths:
       - '**'
 permissions:
   contents: write
+
 jobs:
-  Artifact: # Pack and publish to Github Artifact
+  build_and_package: # Renamed job for clarity
+    name: Build and Package DTVM_SolSDK Nightly # Updated name
     runs-on: ubuntu-latest
     container:
       image: dtvmdev1/dtvm-sol-dev-x64:main
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Use v4
         with:
           lfs: true
           submodules: "true"
       - name: Build the Release
-        working-directory: .
+        working-directory: . 
         run: |
           export CUR_PATH=$(pwd)
           # install rust
@@ -32,10 +35,10 @@ jobs:
 
           ./download_deps.sh
           .ci/package.sh
-          # there should be a DTVM_SolSDK-*.tar.gz file under the target/release directory
+          # Assuming package.sh creates DTVM_SolSDK-*-nightly.tar.gz in target/release
           ls target/release
-      - name: Upload Artifact to Github Releases
+      - name: Upload Nightly Artifact # Renamed step
         uses: actions/upload-artifact@v4
         with:
-          name: DTVM_SolSDK-Linux-nightly.tar.gz.zip
-          path: target/release/DTVM_SolSDK-*.tar.gz
+          name: DTVM_SolSDK-nightly-latest # Updated artifact name
+          path: target/release/DTVM_SolSDK-*-nightly.tar.gz # Updated path assuming this name
