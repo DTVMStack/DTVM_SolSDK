@@ -1,18 +1,22 @@
-name: Release
+name: DTVM_SolSDK Release
+
 on:
   push:
     tags:
-      - "v*"
+      - 'v*.*.*'
+
 permissions:
   contents: write
+
 jobs:
-  Artifact: # Pack and publish to Github Artifact
+  build_release_and_upload:
+    name: Build, Create Release, and Upload Artifact
     runs-on: ubuntu-latest
     container:
       image: dtvmdev1/dtvm-sol-dev-x64:main
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           lfs: true
           submodules: "true"
@@ -32,10 +36,27 @@ jobs:
 
           ./download_deps.sh
           .ci/package.sh
-          # there should be a DTVM_SolSDK-*.tar.gz file under the target/release directory
+          # Assuming package.sh creates DTVM_SolSDK-*-nightly.tar.gz in target/release
           ls target/release
-      - name: Upload Artifact to Github Releases
-        uses: actions/upload-artifact@v4
+      - name: Prepare Release Artifact
+        id: prepare_artifact
+        working-directory: target/release
+        run: |
+          RELEASE_VERSION=${{ github.ref_name }}
+          ARTIFACT_NAME="DTVM_SolSDK-${RELEASE_VERSION}-ubuntu22.04.tar.gz"
+          # Assuming the script generates a file like DTVM_SolSDK.nightly.latest.tar.gz or similar
+          # If the script generates a versioned file directly, adjust this mv command
+          GENERATED_ARTIFACT=$(ls DTVM_SolSDK-*-nightly.tar.gz | head -n 1)
+          echo "Found artifact: $GENERATED_ARTIFACT"
+          mv "${GENERATED_ARTIFACT}" "${ARTIFACT_NAME}"
+          echo "artifact_path=$(pwd)/${ARTIFACT_NAME}" >> $GITHUB_OUTPUT
+          echo "artifact_name=${ARTIFACT_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: DTVM_SolSDK-linux-amd64.tar.gz.zip
-          path: target/release/DTVM_SolSDK-*.tar.gz
+          files: ${{ steps.prepare_artifact.outputs.artifact_path }}
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body: "Release for DTVM_SolSDK version ${{ github.ref_name }}"
+          prerelease: true
