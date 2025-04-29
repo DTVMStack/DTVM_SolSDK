@@ -12,11 +12,16 @@ Before using DTVM_SolSDK, ensure the following dependencies are installed on you
 
 - **solc** (Solidity compiler) or **Foundry**
 - **Binaryen** (Optional)
+- **zstd** (on Mac)
 
 ### Installing Solidity Compiler (solc)
 
 Download the Solidity compiler from:
 [https://github.com/ethereum/solidity/releases](https://github.com/ethereum/solidity/releases)
+
+### Installing zstd (on Mac)
+
+If you are using this tool on Mac, you need to install the **zstd** library. The simplest installation method is to first install `homebrew`, then run `brew install zstd`
 
 ### Installing Foundry
 
