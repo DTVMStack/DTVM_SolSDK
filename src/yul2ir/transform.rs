@@ -24,6 +24,8 @@ use inkwell::values::{BasicValue, BasicValueEnum, FunctionValue, IntValue, Point
 
 use super::yul_instruction::{YulLowLevelFunctionType, YulLowLevelValue, YulLowLevelValueType};
 
+pub const UNIFIED_REVERT_ERROR_ZERO: &str = "$unified_revert_error_zero";
+
 /// Checks if an object contains any sub-contracts.
 /// A sub-contract is defined as any nested object that is not a deployed contract
 /// (i.e., its name doesn't end with "_deployed").
@@ -776,6 +778,20 @@ impl<'a> Yul2IRContext<'a> {
         func_call: &ast::FunctionCall,
     ) -> CompileResult<'a> {
         let func_name = func_call.id.name.clone();
+        let qualifier_func_name = self.get_func_decl_qualifier_name_by_str(&func_name);
+
+        if self
+            .revert_zero_functions
+            .borrow()
+            .contains(&qualifier_func_name)
+        {
+            self.build_void_call(UNIFIED_REVERT_ERROR_ZERO, &[])?;
+            return Ok(YulLowLevelValue {
+                value_type: YulLowLevelValueType::I32,
+                value: self.i32_type().const_zero().into(),
+            });
+        }
+
         if let Some(instr) = parse_intrinsic_func_name(&func_name) {
             let yul_generated_expr = self.walk_yul_instruction(
                 yul_func_name,
@@ -853,12 +869,16 @@ impl<'a> Yul2IRContext<'a> {
             }
         }
 
-        let qualifier_func_name = self.get_func_decl_qualifier_name_by_str(&func_name);
         let infered_yul_func_ty = self
             .yul_func_infer_types
             .borrow()
             .get(&qualifier_func_name)
-            .unwrap()
+            .ok_or_else(|| {
+                ASTLoweringError::BuilderError(format!(
+                    "Called function '{}' definition not found in module '{}'",
+                    func_name, module_name
+                ))
+            })?
             .clone();
 
         let mut call_args = vec![];
@@ -1061,7 +1081,7 @@ impl<'a> Yul2IRContext<'a> {
         }
     }
 
-    fn ok_result(&self) -> CompileResult<'a> {
+    pub fn ok_result(&self) -> CompileResult<'a> {
         Ok(YulLowLevelValue {
             value_type: YulLowLevelValueType::I32,
             value: self.i32_type().const_zero().into(),
@@ -1262,7 +1282,7 @@ impl<'a> Yul2IRContext<'a> {
             return false;
         }
         //  log3
-        if self.matches_log3_statement(&stmts[17]).is_none() {
+        if self.matches_function_call(&stmts[17], "log3", 5).is_none() {
             return false;
         }
         true
@@ -1368,6 +1388,13 @@ impl<'a> Yul2IRContext<'a> {
                 self.yul_func_infer_types
                     .borrow_mut()
                     .insert(qualifier_func_name.clone(), func_low_level_type);
+
+                if self.is_revert_zero_function(func_def) {
+                    self.revert_zero_functions
+                        .borrow_mut()
+                        .insert(qualifier_func_name.clone());
+                    continue;
+                }
 
                 // Add function to module
                 let function = self.llvm_module.borrow_mut().add_function(
@@ -1527,6 +1554,8 @@ impl<'a> Yul2IRContext<'a> {
         if is_main {
             *self.main_module.borrow_mut() = module_name.clone();
         }
+
+        self.generate_unified_revert_zero()?;
 
         for func in object
             .code
