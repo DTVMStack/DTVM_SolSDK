@@ -29,7 +29,7 @@ WORKDIR /home/admin
 USER root
 WORKDIR /opt
 
-RUN echo "export PATH=/opt/llvm15/bin:/opt:\$PATH" >> ~/.bash_profile
+RUN echo "export PATH=/opt/llvm16/bin:/opt:\$PATH" >> ~/.bash_profile
 RUN echo "export LLVM_SYS_160_PREFIX=/opt/llvm16" >> ~/.bash_profile
 ENV PATH=/opt/llvm16/bin:/opt:$PATH
 ENV LLVM_SYS_160_PREFIX=/opt/llvm16
