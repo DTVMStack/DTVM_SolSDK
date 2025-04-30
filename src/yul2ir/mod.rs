@@ -8,6 +8,7 @@ pub mod ast;
 pub mod config;
 pub mod context;
 pub mod errors;
+pub mod function_deduplicator;
 pub mod infer;
 pub mod instruction;
 pub mod stdlib;

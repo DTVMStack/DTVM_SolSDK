@@ -23,7 +23,7 @@ use inkwell::values::{
 };
 use inkwell::{AddressSpace, IntPredicate};
 use once_cell::sync::OnceCell;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::error::Error;
 use std::ops::Add;
 use std::{cell::RefCell, rc::Rc};
@@ -73,6 +73,7 @@ pub struct Yul2IRContext<'ctx> {
 
     pub functions_mapping: RefCell<HashMap<String, Rc<FunctionValue<'ctx>>>>,
     pub current_func_decls: RefCell<IndexMap<String, FunctionDeclaration>>,
+    pub revert_zero_functions: RefCell<HashSet<String>>,
 
     // yul function name => yul low level function type
     pub yul_func_infer_types: RefCell<HashMap<String, YulLowLevelFunctionType<'ctx>>>,
@@ -134,6 +135,7 @@ impl<'ctx> Yul2IRContext<'ctx> {
             vars_scopes: RefCell::new(vec![]),
             functions_mapping: RefCell::new(Default::default()),
             current_func_decls: RefCell::new(Default::default()),
+            revert_zero_functions: RefCell::new(Default::default()),
             yul_func_infer_types: RefCell::new(Default::default()),
             iden_id_gen: RefCell::new(0),
             exported_func_names: RefCell::new(vec![]),
@@ -624,10 +626,15 @@ impl<'ctx> Yul2IRContext<'ctx> {
         }
     }
 
-    pub fn matches_log3_statement(&self, stmt: &Statement) -> Option<Vec<Expression>> {
+    pub fn matches_function_call(
+        &self,
+        stmt: &Statement,
+        name: &str,
+        args_count: usize,
+    ) -> Option<Vec<Expression>> {
         match stmt {
             Statement::FunctionCall(func_call) => {
-                if func_call.id.name == "log3" && func_call.arguments.len() == 5 {
+                if func_call.id.name == name && func_call.arguments.len() == args_count {
                     Some(func_call.arguments.clone())
                 } else {
                     None
