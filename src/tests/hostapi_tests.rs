@@ -213,38 +213,6 @@ mod tests {
     }
 
     #[test]
-    fn test_yul_gaslimit() {
-        let mut runtime = TestRuntime::new("GaslimitTest", "target/test_yul_gaslimit");
-        let _emited_bc = runtime
-            .compile_test_yul(
-                r#"
-            object "GaslimitTest" {
-                code {
-                }
-                object "GaslimitTest_deployed" {
-                    code {
-                        function test_gaslimit() -> r {
-                            r := gaslimit()
-                        }
-
-                        let r := test_gaslimit()
-                        mstore(0x00, r)
-                        return(0x00, 0x20)
-                    }
-                }
-            }
-            "#,
-            )
-            .unwrap();
-        runtime.deploy(&[]).unwrap();
-        runtime
-            .call(&solidity_selector("test_gaslimit()"), &[])
-            .unwrap();
-        // DEFAULT_GAS_LIMIT: 10000000
-        runtime.assert_result("0000000000000000000000000000000000000000000000000000000000989680");
-    }
-
-    #[test]
     fn test_callvalue_not_zero() {
         let mut runtime =
             TestRuntime::new("test_callvalue_not_zero", "target/test_callvalue_not_zero");

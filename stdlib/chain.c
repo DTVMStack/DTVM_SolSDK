@@ -163,30 +163,36 @@ int32_t wrapper_calldata_size() {
   return (int32_t)size;
 }
 
-void wrapper_caller(bytes32 *result) {
-  getCaller(12 + (ADDRESS_UINT)result); // address is 20 bytes
-  // clear first 12 bytes with zeros
-
-  uint32_t *tmp_ptr = (uint32_t *)result;
+static inline void clear_first_12_bytes(bytes32 *memory_ptr) {
+  uint32_t *tmp_ptr = (uint32_t *)memory_ptr;
   tmp_ptr[0] = 0;
   tmp_ptr[1] = 0;
   tmp_ptr[2] = 0;
 }
 
+void wrapper_caller(bytes32 *result) {
+  getCaller(12 + (ADDRESS_UINT)result); // address is 20 bytes
+  clear_first_12_bytes(result);
+}
+
 void wrapper_current_contract(bytes32 *result) {
   getAddress(12 + (ADDRESS_UINT)result); // address is 20 bytes
+  clear_first_12_bytes(result);
 }
 
 void wrapper_origin(bytes32 *result) {
   getTxOrigin(12 + (ADDRESS_UINT)result); // address is 20 bytes
+  clear_first_12_bytes(result);
 }
 
 void wrapper_block_coin_base(bytes32 *result) {
   getBlockCoinbase(12 + (ADDRESS_UINT)result); // address is 20 bytes
+  clear_first_12_bytes(result);
 }
 
 void wrapper_block_prevRandao(bytes32 *result) {
   getBlockPrevRandao(12 + (ADDRESS_UINT)result); // 32 bytes
+  clear_first_12_bytes(result);
 }
 
 void wrapper_callvalue(uint256_t *result) {

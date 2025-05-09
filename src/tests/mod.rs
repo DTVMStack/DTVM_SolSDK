@@ -4,6 +4,7 @@
 mod arithmetic_tests;
 mod bool_tests;
 mod byte_tests;
+mod chain_context_tests;
 mod create_tests;
 mod function_optimize_tests;
 mod hostapi_tests;
