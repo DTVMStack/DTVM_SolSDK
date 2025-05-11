@@ -510,8 +510,8 @@ impl<'ctx> Yul2IRContext<'ctx> {
     }
 
     pub fn string_literal(&self, value: &str) -> IntValue<'ctx> {
-        if value.len() > 31 {
-            // panic!("String literal length exceeds 31 bytes: {}", value);
+        if value.len() > 32 {
+            // panic!("String literal length exceeds 32 bytes: {}", value);
             // String literals used in linker symbol, data offset, and data size instructions
             // don't need to be processed by string_literal function
             // After modifying the logic in instruction.rs, we can restore the panic here

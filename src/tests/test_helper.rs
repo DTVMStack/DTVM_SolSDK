@@ -15,6 +15,7 @@ use rand::distr::Alphanumeric;
 use rand::Rng;
 use std::fs::File;
 use std::io::Write;
+use std::path::Path;
 use std::process::Command;
 use tempfile::tempdir;
 
@@ -132,6 +133,56 @@ impl TestRuntime {
             }
             Err(e) => Err(e.to_string()),
         }
+    }
+
+    #[allow(unused)]
+    pub fn compile_solidity_to_yul(
+        &mut self,
+        solidity_code: &str,
+        contract_name: &str,
+    ) -> Result<String, String> {
+        // avoid using the invalid contract name(not strict check)
+        // this is because solc will generate yul files with basename of contract name
+        // but we don't known the name
+        assert!(solidity_code.contains(&format!("contract {contract_name}")));
+
+        // 1. create tmp file to store the solidity code
+        let tmp_dir = Path::new(&self.output_dir);
+        let sol_path = tmp_dir.join("input.sol");
+        let yul_file_basename = &format!("{contract_name}.yul");
+        let yul_path = tmp_dir.join(yul_file_basename);
+        println!(
+            "tmp_dir: {:?}, yul_path: {:?}",
+            tmp_dir.as_os_str(),
+            yul_path.as_os_str()
+        );
+
+        if !sol_path.exists() {
+            let mut sol_file = File::create(&sol_path).map_err(|e| e.to_string())?;
+            sol_file
+                .write_all(solidity_code.as_bytes())
+                .map_err(|e| e.to_string())?;
+        }
+        // There are multiple output files, and the output file names are related to the Solidity contract name.
+        // 2. using `solc` to compile,
+        // eg. solc --ir --optimize-yul -o . --overwrite input.sol
+        let output = Command::new("solc")
+            .current_dir(tmp_dir)
+            .arg("--ir")
+            .arg("--optimize-yul")
+            .arg("--overwrite")
+            .arg("-o")
+            .arg(".")
+            .arg("input.sol")
+            .output()
+            .map_err(|e| e.to_string())?;
+        if !output.status.success() {
+            return Err(String::from_utf8_lossy(&output.stderr).to_string());
+        }
+        // 3. read the generated yul file content
+        let yul_content = std::fs::read_to_string(&yul_path)
+            .map_err(|e| format!("Failed to read yul file: {}", e))?;
+        Ok(yul_content)
     }
 
     #[allow(unused)]
