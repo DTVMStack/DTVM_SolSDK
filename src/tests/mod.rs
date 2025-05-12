@@ -15,6 +15,7 @@ mod mod_arithmetic_tests;
 mod mstore_tests;
 mod shift_tests;
 mod signed_arithmetic_tests;
+mod solidity_strings;
 mod string_tests;
 mod syntax_tests;
 mod test;
