@@ -12,15 +12,16 @@ source ../../tools/build_utils.sh
 setup_build_mode ${1:-release}
 
 forge clean
-forge build --extra-output-files ir-optimized
-# for debug: forge build --extra-output-files ir
-# ir generated in out/TokenFactory.sol/TokenFactory.ir
+cp ../scripts/WasmTestVM.sol src/WasmTestVM.sol
+forge test --extra-output-files ir-optimized
+rm src/WasmTestVM.sol
 
 YUL_IR_PATH="out"
+
 # contracts to compile
 CONTRACTS=(
-    "MyToken"
-    "TokenFactory"
+    "WasmTestVM"
+    "TestContract"
 )
 
 compile_all_contracts CONTRACTS[@] "$YUL_IR_PATH"

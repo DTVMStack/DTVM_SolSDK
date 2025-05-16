@@ -80,6 +80,8 @@ jobs:
           ./build.sh debug
           ./test_my_token.sh
           ./test_token_factory.sh
+          ./build_forge_test.sh debug
+          ./test_forge_test.sh
 
           echo "testing examples/perf_example"
           cd $CUR_PATH/examples/perf_example
