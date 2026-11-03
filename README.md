@@ -28,7 +28,7 @@ DTVM_SolSDK works by accepting Solidity's Yul intermediate representation (IR) a
 
 * Solidity Compiler 0.8.29/(0.8.25+)
 * LLVM 16
-* Rust 1.83 or later
+* Rust 1.86 or later
 * Binaryen (`brew install binaryen` on macOS, `apt install -y binaryen` on Ubuntu)
 
 ### Building the Project

@@ -6,7 +6,7 @@ DTVM_SolSDK is a compiler that translates Solidity's Yul intermediate representa
 ## Development Environment Setup
 
 ### Prerequisites
-- Rust 1.83 or newer
+- Rust 1.86 or newer
 - LLVM 16
 - Solidity Compiler 0.8.25
 - Binaryen (for wasm tools like wasm2wat)
