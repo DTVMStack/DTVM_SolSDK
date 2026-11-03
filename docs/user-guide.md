@@ -12,7 +12,7 @@ Before using DTVM_SolSDK, ensure you have the following prerequisites installed:
 
 - Solidity Compiler 0.8.29(0.8.25+)
 - LLVM 16
-- Rust 1.83 or later
+- Rust 1.86 or later
 - Binaryen (for wasm tools)
 
 For detailed installation instructions, refer to the [Developer Guide](developer-guide.md).

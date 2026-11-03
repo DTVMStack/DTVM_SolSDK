@@ -307,7 +307,7 @@ impl TestRuntime {
             .last_output
             .lines()
             .filter(|line| line.starts_with(finish_prefix) || line.starts_with(revert_prefix))
-            .last();
+            .next_back();
 
         let expected_line = format!("{}{}", expected_prefix, expected_hex);
 

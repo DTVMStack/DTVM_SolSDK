@@ -15,7 +15,7 @@ Before compiling DTVM_SolSDK, you need to install the following dependencies:
 
 ### Required Dependencies
 
-1. **Rust 1.83+**
+1. **Rust 1.86+**
    - Rust language and its package manager Cargo
    
 2. **LLVM 16**
